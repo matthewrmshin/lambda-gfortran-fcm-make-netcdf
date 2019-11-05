@@ -39,4 +39,11 @@ WORKDIR /opt/netcdf-fortran-${NF_VN}
 RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
     CPPFLAGS=-I/var/task/include LDFLAGS=-L/var/task/lib \
     ./configure --prefix=/var/task && make install && /var/task/bin/nf-config --all
+# GFortran libraries
+RUN cp -p \
+    /usr/lib64/libgfortran.so.3 \
+    /usr/lib64/libgfortran.so.3.0.0 \
+    /usr/lib64/libquadmath.so.0 \
+    /usr/lib64/libquadmath.so.0.0.0 \
+    /var/task/lib/
 CMD bash
