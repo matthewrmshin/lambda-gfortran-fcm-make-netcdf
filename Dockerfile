@@ -8,13 +8,6 @@ LABEL description="Amazon Lambda + GFfortran + FCM Make + netCDF" \
 RUN yum -y update \
     && yum -y install gcc-gfortran glibc-static libcurl-devel perl-core
 
-# Dependencies for netCDF libraries.
-# Note: NetCDF libraries on EPEL do not work with modern GFortran,
-#       so building from source here.
-#RUN yum -y install libcurl-devel make m4 zlib-devel \
-#    && yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-#    && yum -y install hdf5 hdf5-devel hdf5-static
-
 # Install FCM Make
 WORKDIR /opt
 ENV FCM_VN=2019.09.0
@@ -46,5 +39,4 @@ WORKDIR /opt/netcdf-fortran-${NF_VN}
 RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
     CPPFLAGS=-I/var/task/include LDFLAGS=-L/var/task/lib \
     ./configure --prefix=/var/task && make install && /var/task/bin/nf-config --all
-
 CMD bash
