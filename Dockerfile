@@ -1,20 +1,15 @@
-FROM lambci/lambda:build-python3.7
+FROM lambci/lambda:build-python3.7 AS base
 
-LABEL description="Amazon Lambda + GFfortran + FCM Make + netCDF" \
-      maintainer="matthew.shin@metoffice.gov.uk" \
-      version="0.1"
+RUN yum -y update && yum -y install gcc-gfortran libcurl-devel
+RUN mkdir -p /var/task/lib \
+    && cp -p \
+    /usr/lib64/libgfortran.so.3 \
+    /usr/lib64/libgfortran.so.3.0.0 \
+    /usr/lib64/libquadmath.so.0 \
+    /usr/lib64/libquadmath.so.0.0.0 \
+    /var/task/lib/
 
-# Dependencies for FCM Make.
-RUN yum -y update \
-    && yum -y install gcc-gfortran glibc-static libcurl-devel perl-core
-
-# Install FCM Make
-WORKDIR /opt
-ENV FCM_VN=2019.09.0
-RUN curl -L "https://github.com/metomi/fcm/archive/${FCM_VN}.tar.gz" | tar -xz
-WORKDIR /usr/local/bin
-RUN echo -e '#!/bin/sh'"\n"'exec /opt/fcm-'"${FCM_VN}"'/bin/fcm "$@"' >'fcm' \
-    && chmod +x 'fcm'
+FROM base AS install-netcdf
 
 # Build and install netCDF libraries.
 ENV ZLIB_VN=1.2.11
@@ -39,11 +34,22 @@ WORKDIR /opt/netcdf-fortran-${NF_VN}
 RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
     CPPFLAGS=-I/var/task/include LDFLAGS=-L/var/task/lib \
     ./configure --prefix=/var/task && make install && /var/task/bin/nf-config --all
-# GFortran libraries
-RUN cp -p \
-    /usr/lib64/libgfortran.so.3 \
-    /usr/lib64/libgfortran.so.3.0.0 \
-    /usr/lib64/libquadmath.so.0 \
-    /usr/lib64/libquadmath.so.0.0.0 \
-    /var/task/lib/
+
+FROM base AS install-fcm-make
+
+COPY --from=build-netcdf /var/task/lib/*.so.* /var/task/lib
+
+# Dependencies for FCM Make.
+RUN yum -y install perl-core
+
+# Install FCM Make
+ENV FCM_VN=2019.09.0
+WORKDIR /opt
+RUN curl -L "https://github.com/metomi/fcm/archive/${FCM_VN}.tar.gz" | tar -xz
+RUN ln -s "fcm-${FCM_VN}" '/opt/fcm' \
+    && cp -p '/opt/fcm/usr/bin/fcm' '/usr/local/bin/fcm'
 CMD bash
+
+LABEL description="Amazon Lambda + GFfortran + FCM Make + netCDF" \
+      maintainer="matthew.shin@metoffice.gov.uk" \
+      version="1"
