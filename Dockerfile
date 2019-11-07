@@ -1,13 +1,6 @@
 FROM lambci/lambda:build-python3.7 AS base
 
 RUN yum -y update && yum -y install gcc-gfortran libcurl-devel
-RUN mkdir -p /var/task/lib \
-    && cp -p \
-    /usr/lib64/libgfortran.so.3 \
-    /usr/lib64/libgfortran.so.3.0.0 \
-    /usr/lib64/libquadmath.so.0 \
-    /usr/lib64/libquadmath.so.0.0.0 \
-    /var/task/lib/
 
 FROM base AS install-netcdf
 
@@ -37,7 +30,13 @@ RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
 
 FROM base AS install-fcm-make
 
-COPY --from=install-netcdf /var/task/lib/*.so.* /var/task/lib/
+COPY --from=install-netcdf /var/task /var/task
+RUN cp -p \
+    /usr/lib64/libgfortran.so.3 \
+    /usr/lib64/libgfortran.so.3.0.0 \
+    /usr/lib64/libquadmath.so.0 \
+    /usr/lib64/libquadmath.so.0.0.0 \
+    /var/task/lib/
 
 # Dependencies for FCM Make.
 RUN yum -y install perl-core
