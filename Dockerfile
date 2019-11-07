@@ -37,7 +37,7 @@ RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
 
 FROM base AS install-fcm-make
 
-COPY --from=install-netcdf /var/task/lib/*.so.* /var/task/lib
+COPY --from=install-netcdf /var/task/lib/*.so.* /var/task/lib/
 
 # Dependencies for FCM Make.
 RUN yum -y install perl-core
