@@ -28,6 +28,9 @@ jobs:
           fcm make -C '/opt/test' -f '/opt/test/fcm-make-with-netcdf.cfg'
         docker run --rm -v "${PWD}/test:/opt/test" "${TAG}" \
           '/opt/test/build/bin/simple_xy_wr.bin'
+        mkdir -p 'test/lib'
+        docker run --rm -v "${PWD}/test/lib:/tmp/test/lib" "${TAG}" \
+            find '/var/task/lib' -name '*.so*' -exec cp '{}' '/tmp/test/lib/' ';'
         docker run --rm \
           -v "${PWD}/test:/var/task" \
           'lambci/lambda:python3.7' \
