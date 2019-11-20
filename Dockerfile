@@ -32,10 +32,8 @@ FROM base AS install-fcm-make
 
 COPY --from=install-netcdf /var/task /var/task
 RUN cp -p \
-    /usr/lib64/libgfortran.so.3 \
-    /usr/lib64/libgfortran.so.3.0.0 \
-    /usr/lib64/libquadmath.so.0 \
-    /usr/lib64/libquadmath.so.0.0.0 \
+    /usr/lib64/libgfortran.so.* \
+    /usr/lib64/libquadmath.so.* \
     /var/task/lib/
 
 # Dependencies for FCM Make.
