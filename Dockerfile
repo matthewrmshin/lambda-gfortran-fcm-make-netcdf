@@ -1,4 +1,4 @@
-FROM lambci/lambda:build-python3.7 AS base
+FROM lambci/lambda:build-python3.8 AS base
 
 RUN yum -y update && yum -y install gcc-gfortran libcurl-devel
 
