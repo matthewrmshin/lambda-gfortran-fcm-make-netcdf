@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TAG: "${{github.repository}}:${{github.sha}}"
+      TAG: "docker.pkg.github.com/${{github.repository}}/build:latest"
 
     steps:
     - uses: actions/checkout@v1
@@ -36,3 +36,10 @@ jobs:
           'lambci/lambda:python3.7' \
           'index.handler' \
           '{"executable": "/var/task/build/bin/simple_xy_wr.bin"}'
+    - name: Push Docker image to GPR
+      run: |
+        docker login 'docker.pkg.github.com' \
+          -u 'publisher' --password-stdin <<<"${GPR_TOKEN}"
+        docker push "${TAG}"
+      env:
+        GPR_TOKEN: ${{secrets.GPR_TOKEN}}
