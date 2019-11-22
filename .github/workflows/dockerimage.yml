@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Login to GPR
-      run: docker login 'docker.pkg.github.com' -u 'publisher' -p "${GPR_TOKEN}"
+      run: |
+        printenv 'GPR_TOKEN' \
+        | docker login 'docker.pkg.github.com' -u 'publisher' --password-stdin
       env:
         GPR_TOKEN: ${{secrets.GPR_TOKEN}}
     - name: Build the Docker image
