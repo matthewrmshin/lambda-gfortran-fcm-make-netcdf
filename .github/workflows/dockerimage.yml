@@ -13,12 +13,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    #- name: Login to GPR
-    #  run: |
-    #    printenv 'GPR_TOKEN' \
-    #    | docker login -u 'publisher' --password-stdin 'docker.pkg.github.com'
-    #  env:
-    #    GPR_TOKEN: ${{secrets.GPR_TOKEN}}
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag "${TAG}"
     - name: Test Docker image, basic
@@ -42,5 +36,7 @@ jobs:
           'lambci/lambda:python3.7' \
           'index.handler' \
           '{"executable": "/var/task/build/bin/simple_xy_wr.bin"}'
-    #- name: Push Docker image to GPR
-    #  run: docker push "${TAG}"
+    - name: Push Docker image to GPR
+      run: |
+        docker login -u "${GITHUB_REPOSITORY%%/*}" --password-stdin 'docker.pkg.github.com' <<<'${{secrets.GITHUB_TOKEN}}'
+        docker push "${TAG}"
