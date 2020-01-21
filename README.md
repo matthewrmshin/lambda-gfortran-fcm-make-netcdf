@@ -23,14 +23,14 @@ lambda handler function.
 
 ## Usage
 
-Build the image:
+Get the image from Docker Hub:
 
-`docker build . --tag 'lambda-gfortran-fcm-make-netcdf'`
+`docker pull matthewrmshin/lambda-gfortran-fcm-make-netcdf`
 
 Use the image to run `fcm make` to build the Fortran source tree in the current
 working directory:
 
-`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/opt/myapp" 'lambda-gfortran-fcm-make-netcdf' fcm make -C /opt/myapp`
+`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/opt/myapp" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf' fcm make -C /opt/myapp`
 
 The executables should be located under `./build/bin/`.
 
@@ -39,7 +39,7 @@ To package things up...
 * Create a new directory. Change directory to it.
   E.g. `mkdir 'package'; pushd 'package'`.
 * Copy the shared libraries out of the docker image into `./lib/`.
-  E.g. `mkdir 'lib'; docker run --rm -t -i -v "$PWD:/tmp/package" 'lambda-gfortran-fcm-make-netcdf' cp -r '/var/task/lib' '/tmp/package/'`.
+  E.g. `mkdir 'lib'; docker run --rm -t -i -v "$PWD:/tmp/package" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf' cp -r '/var/task/lib' '/tmp/package/'`.
 * Copy the executable files to `./bin/`. E.g. `mkdir bin; cp -p ../build/bin/* bin/`.
 * Add some runtime configuration, e.g. namelists to the package if appropriate.
 * Add a Python module with a lambda handler function. It should do:
