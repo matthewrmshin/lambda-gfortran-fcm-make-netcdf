@@ -50,7 +50,6 @@ RUN curl -L "https://github.com/metomi/fcm/archive/${FCM_VN}.tar.gz" | tar -xz
 RUN ln -s "fcm-${FCM_VN}" '/opt/fcm' \
     && cp -p '/opt/fcm/usr/bin/fcm' '/usr/local/bin/fcm'
 WORKDIR /tmp/myapp
-ENTRYPOINT ["fcm", "make"]
 
 LABEL description="AWS Lambda Python 3.8 + GFfortran + netCDF + FCM Make" \
       maintainer="matthew.shin@metoffice.gov.uk" \
