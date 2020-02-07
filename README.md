@@ -30,10 +30,10 @@ Get the image from Docker Hub:
 Use the image to run `fcm make` to build the Fortran source tree in the current
 working directory:
 
-`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/opt/myapp" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf'`
+`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/tmp/myapp" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf'`
 
 Note: The entry point of the container is `fcm make` and the working directory
-is `/opt/myapp`.  The executables should be located under `./build/bin/`.
+is `/tmp/myapp`.  The executables should be located under `./build/bin/`.
 
 To package things up...
 * (Hopefully, a more automated way will follow.)
