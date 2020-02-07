@@ -17,17 +17,17 @@ jobs:
       run: docker build . --file Dockerfile --tag "${TAG}"
     - name: Test Docker image, basic
       run: |
-        docker run --rm -v "${PWD}/test:/opt/test" "${TAG}" fcm make -C '/opt/test'
-        docker run --rm -v "${PWD}/test:/opt/test" "${TAG}" '/opt/test/build/bin/hello.bin'
+        docker run --rm -v "${PWD}/test:/tmp/myapp" "${TAG}" fcm make
+        docker run --rm -v "${PWD}/test:/tmp/myapp" "${TAG}" './build/bin/hello.bin'
     - name: Test Docker image, build with netCDF
       run: |
         curl -L \
           'https://www.unidata.ucar.edu/software/netcdf/examples/programs/simple_xy_wr.f90' \
           -o 'test/src/simple_xy_wr.f90'
-        docker run --rm -v "${PWD}/test:/opt/test" "${TAG}" \
-          fcm make -C '/opt/test' -f '/opt/test/fcm-make-with-netcdf.cfg'
-        docker run --rm -v "${PWD}/test:/opt/test" "${TAG}" \
-          '/opt/test/build/bin/simple_xy_wr.bin'
+        docker run --rm -v "${PWD}/test:/tmp/myapp" "${TAG}" \
+          fcm make -f './fcm-make-with-netcdf.cfg'
+        docker run --rm -v "${PWD}/test:/tmp/myapp" "${TAG}" \
+          './build/bin/simple_xy_wr.bin'
         mkdir -p 'test/lib'
         docker run --rm -v "${PWD}/test/lib:/tmp/test/lib" "${TAG}" \
             find '/var/task/lib' -name '*.so*' -exec cp '{}' '/tmp/test/lib/' ';'
