@@ -6,7 +6,7 @@
 # lambda-gfortran-fcm-make-netcdf
 
 Dockerfile based on [AWS Lambda](https://hub.docker.com/r/lambci/lambda/)
-Python 3.7 runtime Environment with:
+Python 3.8 runtime Environment with:
 * [GFortran](https://gcc.gnu.org/wiki/GFortran)
 * [FCM Make](https://github.com/metomi/fcm/) - the Fortran build system
 * [netCDF](https://www.unidata.ucar.edu/software/netcdf/)
@@ -17,7 +17,7 @@ Fortran executable that has a dependency on the netCDF library.
 The shared libraries are placed under `/var/task/`, which can then be extracted
 easily to be part of a lambda package.
 
-The container is currently based on the Python 3.7 lambda runtime, so the
+The container is currently based on the Python 3.8 lambda runtime, so the
 Fortran executable is expected to run as a subprocess invoked by a Python
 lambda handler function.
 
@@ -30,9 +30,10 @@ Get the image from Docker Hub:
 Use the image to run `fcm make` to build the Fortran source tree in the current
 working directory:
 
-`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/opt/myapp" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf' fcm make -C /opt/myapp`
+`docker run --rm -t -i -u "$(id -u):$(id -g)" -v "$PWD:/opt/myapp" 'matthewrmshin/lambda-gfortran-fcm-make-netcdf'`
 
-The executables should be located under `./build/bin/`.
+Note: The entry point of the container is `fcm make` and the working directory
+is `/opt/myapp`.  The executables should be located under `./build/bin/`.
 
 To package things up...
 * (Hopefully, a more automated way will follow.)
@@ -51,4 +52,5 @@ To package things up...
 * Create a zip file with content of the current directory.
 * Deploy the package.
 
-More usages to follow soon.
+The [lambda-jules](https://github.com/matthewrmshin/lambda-jules) repository
+contains some example usage.

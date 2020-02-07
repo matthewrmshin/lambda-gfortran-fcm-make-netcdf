@@ -1,6 +1,6 @@
 FROM lambci/lambda:build-python3.8 AS base
 
-RUN yum -y update && yum -y install gcc-gfortran libcurl-devel
+RUN yum -y update && yum -y install gcc-gfortran
 
 FROM base AS install-netcdf
 
@@ -36,10 +36,7 @@ FROM base AS install-fcm-make
 
 COPY --from=install-netcdf /var/task /var/task
 RUN cp -p \
-    /usr/lib64/libcurl.so.* \
     /usr/lib64/libgfortran.so.* \
-    /usr/lib64/libidn*.so.* \
-    /usr/lib64/libnghttp2*.so.* \
     /usr/lib64/libquadmath.so.* \
     /var/task/lib/
 
@@ -52,8 +49,9 @@ WORKDIR /opt
 RUN curl -L "https://github.com/metomi/fcm/archive/${FCM_VN}.tar.gz" | tar -xz
 RUN ln -s "fcm-${FCM_VN}" '/opt/fcm' \
     && cp -p '/opt/fcm/usr/bin/fcm' '/usr/local/bin/fcm'
-CMD bash
+WORKDIR /opt/myapp
+ENTRYPOINT ["fcm", "make"]
 
-LABEL description="AWS Lambda Python 3.8 + GFfortran + FCM Make + netCDF" \
+LABEL description="AWS Lambda Python 3.8 + GFfortran + netCDF + FCM Make" \
       maintainer="matthew.shin@metoffice.gov.uk" \
       version="1"

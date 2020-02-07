@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TAG: "docker.pkg.github.com/${{github.repository}}/build:latest"
+      TAG: "docker.pkg.github.com/${{github.repository}}/python3.8:latest"
 
     steps:
     - uses: actions/checkout@v1
@@ -33,7 +33,7 @@ jobs:
             find '/var/task/lib' -name '*.so*' -exec cp '{}' '/tmp/test/lib/' ';'
         docker run --rm \
           -v "${PWD}/test:/var/task" \
-          'lambci/lambda:python3.7' \
+          'lambci/lambda:python3.8' \
           'index.handler' \
           '{"executable": "/var/task/build/bin/simple_xy_wr.bin"}'
     - name: Push Docker image to GPR
