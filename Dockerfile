@@ -36,7 +36,10 @@ FROM base AS install-fcm-make
 
 COPY --from=install-netcdf /var/task /var/task
 RUN cp -p \
+    /usr/lib64/libcurl.so.* \
     /usr/lib64/libgfortran.so.* \
+    /usr/lib64/libidn*.so.* \
+    /usr/lib64/libnghttp2*.so.* \
     /usr/lib64/libquadmath.so.* \
     /var/task/lib/
 
