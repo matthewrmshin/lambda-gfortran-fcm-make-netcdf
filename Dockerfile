@@ -1,4 +1,4 @@
-FROM lambci/lambda:build-python3.7 AS base
+FROM lambci/lambda:build-python3.8 AS base
 
 RUN yum -y update && yum -y install gcc-gfortran libcurl-devel
 
@@ -22,11 +22,15 @@ RUN ./configure --with-zlib=/var/task --prefix=/var/task --enable-hl \
 WORKDIR /opt/netcdf-c-${NC_VN}
 RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
     CPPFLAGS=-I/var/task/include LDFLAGS=-L/var/task/lib \
-    ./configure --prefix=/var/task && make install && /var/task/bin/nc-config --all
+    ./configure --prefix=/var/task --disable-dap \
+    && make install \
+    && /var/task/bin/nc-config --all
 WORKDIR /opt/netcdf-fortran-${NF_VN}
 RUN env CPATH=/var/task/include LD_LIBRARY_PATH=/var/task/lib \
     CPPFLAGS=-I/var/task/include LDFLAGS=-L/var/task/lib \
-    ./configure --prefix=/var/task && make install && /var/task/bin/nf-config --all
+    ./configure --prefix=/var/task \
+    && make install \
+    && /var/task/bin/nf-config --all
 
 FROM base AS install-fcm-make
 
@@ -47,6 +51,6 @@ RUN ln -s "fcm-${FCM_VN}" '/opt/fcm' \
     && cp -p '/opt/fcm/usr/bin/fcm' '/usr/local/bin/fcm'
 CMD bash
 
-LABEL description="Amazon Lambda + GFfortran + FCM Make + netCDF" \
+LABEL description="AWS Lambda Python 3.8 + GFfortran + FCM Make + netCDF" \
       maintainer="matthew.shin@metoffice.gov.uk" \
       version="1"
