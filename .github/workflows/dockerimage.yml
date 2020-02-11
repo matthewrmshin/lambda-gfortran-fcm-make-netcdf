@@ -18,6 +18,7 @@ jobs:
     - name: Test Docker image, basic
       run: |
         mkdir -p './package'
+        cp -p './test/index.py' './package'
         docker run --rm \
           -v "${PWD}/test:/tmp/myapp" \
           -v "${PWD}/package:/tmp/package" \
@@ -33,6 +34,7 @@ jobs:
           'https://www.unidata.ucar.edu/software/netcdf/examples/programs/simple_xy_wr.f90' \
           -o 'test/src/simple_xy_wr.f90'
         mkdir -p './package'
+        cp -p './test/index.py' './package'
         docker run --rm \
           -v "${PWD}/test:/tmp/myapp" \
           -v "${PWD}/package:/tmp/package" \
