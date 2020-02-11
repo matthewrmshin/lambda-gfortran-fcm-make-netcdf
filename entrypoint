@@ -1,0 +1,15 @@
+#!/bin/bash
+set -euo pipefail
+fcm make "$@"
+if [[ -d '/tmp/package' ]]; then
+    mkdir '/tmp/package/lib'
+    (cd '/var/task/lib' && cp -p ./*.so* '/tmp/package/lib/')
+    for SUBD in 'bin' 'etc' 'lib'; do
+        if [[ ! -d "./build/${SUBD}" ]]; then
+            continue
+        fi
+        mkdir -p "/tmp/package/${SUBD}"
+        (cd "./build/${SUBD}" && cp -pr ./* "/tmp/package/${SUBD}")
+    done
+fi
+exit
