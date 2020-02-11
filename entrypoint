@@ -1,8 +1,8 @@
 #!/bin/bash
-set -euo pipefail
+set -euxo pipefail
 fcm make "$@"
 if [[ -d '/tmp/package' ]]; then
-    mkdir '/tmp/package/lib'
+    mkdir -p '/tmp/package/lib'
     (cd '/var/task/lib' && cp -p ./*.so* '/tmp/package/lib/')
     for SUBD in 'bin' 'etc' 'lib'; do
         if [[ ! -d "./build/${SUBD}" ]]; then

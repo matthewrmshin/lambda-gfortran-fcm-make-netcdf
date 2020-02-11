@@ -39,7 +39,7 @@ jobs:
           -v "${PWD}/test:/tmp/myapp" \
           -v "${PWD}/package:/tmp/package" \
           "${TAG}" \
-          -f './fcm-make-with-netcdf.cfg'
+          -f '/tmp/myapp/fcm-make-with-netcdf.cfg'
         docker run --rm \
           -v "${PWD}/package:/var/task" \
           'lambci/lambda:python3.8' \
