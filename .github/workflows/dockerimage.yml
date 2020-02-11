@@ -22,7 +22,11 @@ jobs:
           -v "${PWD}/test:/tmp/myapp" \
           -v "${PWD}/package:/tmp/package" \
           "${TAG}"
-        ./package/bin/hello.bin
+        docker run --rm \
+          -v "${PWD}/package:/var/task" \
+          'lambci/lambda:python3.8' \
+          'index.handler' \
+          '{"executable": "/var/task/bin/hello.bin"}'
     - name: Test Docker image, build with netCDF
       run: |
         curl -L \
@@ -38,7 +42,7 @@ jobs:
           -v "${PWD}/package:/var/task" \
           'lambci/lambda:python3.8' \
           'index.handler' \
-          '{"executable": "/var/task/build/bin/simple_xy_wr.bin"}'
+          '{"executable": "/var/task/bin/simple_xy_wr.bin"}'
     - name: Push Docker image to GPR
       run: |
         docker login -u "${GITHUB_REPOSITORY%%/*}" --password-stdin 'docker.pkg.github.com' <<<'${{secrets.GITHUB_TOKEN}}'
