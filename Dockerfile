@@ -51,6 +51,7 @@ RUN ln -s "fcm-${FCM_VN}" '/opt/fcm' \
     && cp -p '/opt/fcm/usr/bin/fcm' '/usr/local/bin/fcm'
 COPY entrypoint /usr/local/bin/entrypoint
 WORKDIR /tmp/myapp
+RUN chmod 0777 /tmp/myapp
 ENTRYPOINT ["entrypoint"]
 
 LABEL description="AWS Lambda Python 3.8 + GFfortran + netCDF + FCM Make" \
